@@ -1,41 +1,43 @@
-#include <stdio.h>
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <ctime>
 using namespace std;
 
+// Function prototypes
+void printBothBoards(char board1[10][10], char board2[10][10]);
+
 // Prints both boards side by side
 void printBothBoards(char board1[10][10], char board2[10][10]) {
     // Print column numbers for both boards
     cout << "\t  Player 1\t\t\t  Player 2\n";
-    for(int i = 0; i < 1; i++){
+    for (int i = 0; i < 1; i++) {
         cout << "\t  ";
-        for(int j = 0; j < 10; j++){
+        for (int j = 0; j < 10; j++) {
             cout << j << " ";
         }
         cout << "\t\t  ";
-        for(int j = 0; j < 10; j++){
+        for (int j = 0; j < 10; j++) {
             cout << j << " ";
         }
         cout << "\n";
     }
 
     // Print both boards row by row
-    for (int i = 0; i < 10; i++){
+    for (int i = 0; i < 10; i++) {
         cout << "\t" << i << " ";
-        for (int j = 0; j < 10; j++){
+        for (int j = 0; j < 10; j++) {
             cout << board1[i][j] << " ";
         }
         cout << "\t\t" << i << " ";
-        for (int j = 0; j < 10; j++){
+        for (int j = 0; j < 10; j++) {
             cout << board2[i][j] << " ";
         }
         cout << "\n";
     }
 }
 
-int main(){
+int main() {
     // Player 1's board
     char num1[10][10];
     // Player 2's board
@@ -55,8 +57,8 @@ int main(){
     bool isPlayer1Turn = true;
 
     // Create blank boards for Player 1 and 2
-    for (int i = 0; i < 10; i++){
-        for(int j = 0; j < 10; j++){
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
             num1[i][j] = '-';
             num2[i][j] = '-';
         }
@@ -65,11 +67,11 @@ int main(){
     printBothBoards(num1, num2);
 
     // Menu function for the whole game
-    while(menu != 'q'){
+    while (menu != 'q') {
         cout << "\nType (a) to add new ship, (b) to see the boards, (p) to play or (q) to quit:\n";
         cin >> menu;
 
-        if (menu == 'a'){
+        if (menu == 'a') {
             char playerChoice;
             cout << "Add ship for Player 1 or Player 2? (1/2): ";
             cin >> playerChoice;
@@ -79,13 +81,12 @@ int main(){
             restart = 0;
             test = 0;
             size = 0;
-            int test2 = 0;
-            while(restart != 1){
-                test = 0;
+
+            while (restart != 1) {
                 cout << "Please choose how big your ship will be (please note can not be less than 3 or greater than 5): \n";
                 cin >> size;
-                while(size > 5 || size < 3){
-                    cout << "Ship size does not exist please try again\n";
+                while (size > 5 || size < 3) {
+                    cout << "Ship size does not exist, please try again\n";
                     cout << "Please choose how big your ship will be (please note can not be less than 3 or greater than 5): \n";
                     cin >> size;
                 }
@@ -97,57 +98,54 @@ int main(){
                 cin >> y;
 
                 // Check for overlap
-                while (currentBoard[x][y] == 'B'){
-                    cout << "Error X and Y values need to be changed\n";
+                while (currentBoard[x][y] == 'B') {
+                    cout << "Error: X and Y values need to be changed. Ship already present at this location.\n";
                     cout << "Please choose your X location for your ship: \n";
                     cin >> x;
                     cout << "Please choose your Y location for your ship: \n";
                     cin >> y;
                 }
 
-                cout << "Please choose the direction your ship will go in vertical(v) or horizontal(h): \n";
+                cout << "Please choose the direction your ship will go in - vertical(v) or horizontal(h): \n";
                 cin >> direction;
 
                 // Validate direction input
-                while (direction != 'v' && direction != 'h'){
-                    cout << "Please choose the direction your ship will go in vertical(v) or horizontal(h): \n";
+                while (direction != 'v' && direction != 'h') {
+                    cout << "Invalid direction. Please choose vertical(v) or horizontal(h): \n";
                     cin >> direction;
                 }
 
                 // Test for valid ship placement
-                if(direction == 'h' && (y + size) > 10){
+                if (direction == 'h' && (y + size) > 10) {
                     cout << "Error: Ship goes out of bounds. Please choose different coordinates or direction.\n";
                     continue;
-                }
-                else if(direction == 'v' && (x + size) > 10){
+                } else if (direction == 'v' && (x + size) > 10) {
                     cout << "Error: Ship goes out of bounds. Please choose different coordinates or direction.\n";
                     continue;
                 }
 
                 // Place the ship
-                currentBoard[x][y] = 'B';
-                for(int i = 0; i < size; i++){
-                    if(direction == 'h'){
-                        currentBoard[x][y+i] = 'B';
+                for (int i = 0; i < size; i++) {
+                    if (direction == 'h') {
+                        currentBoard[x][y + i] = 'B';
+                    } else if (direction == 'v') {
+                        currentBoard[x + i][y] = 'B';
                     }
-                    if(direction == 'v'){
-                        currentBoard[x+i][y] = 'B';
-                    }
-                    currentCount += 1;
                 }
+                currentCount += size;
                 restart = 1;
             }
         }
 
         // Print both boards if menu equals 'b'
-        if(menu == 'b'){
+        if (menu == 'b') {
             cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
             printBothBoards(num1, num2);
         }
 
         // Begins the play function of the game
-        if(menu == 'p'){
-            while (count1 != 0 && count2 != 0){
+        if (menu == 'p') {
+            while (count1 > 0 && count2 > 0) {
                 char (*currentBoard)[10] = isPlayer1Turn ? num2 : num1;
                 int &currentCount = isPlayer1Turn ? count2 : count1;
                 cout << (isPlayer1Turn ? "Player 1" : "Player 2") << "'s turn:\n";
@@ -157,7 +155,7 @@ int main(){
                 cout << "Please choose your Y location for your bomb: \n";
                 cin >> y;
 
-                while (currentBoard[y][x] == 'x'){
+                while (currentBoard[y][x] == 'x') {
                     cout << "You have already fired here, please choose again\n";
                     cout << "Please choose your X location for your bomb: \n";
                     cin >> x;
@@ -166,7 +164,7 @@ int main(){
                 }
 
                 shoot += 1;
-                if(currentBoard[y][x] == 'B'){
+                if (currentBoard[y][x] == 'B') {
                     currentBoard[y][x] = 'x';
                     currentCount -= 1;
                     cout << "You hit a ship! Ships remaining: " << currentCount << "\n";
@@ -183,4 +181,6 @@ int main(){
             cout << "It took " << shoot << " shots in total.\n";
         }
     }
+
+    return 0;
 }
